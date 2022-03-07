@@ -62,11 +62,13 @@ image, y = Test.comatrice()
 Classifieur.cross_test_all(image, y)
 
 # path = "Data/AllTest"
-# # X_test = Model_test.comatrice(path)
-# # X_train, y_train = Test.comatrice()
-# # y_predit = Classifieur.cross_forest(X_train, y_train, X_test)
+# X_test = Model_test.comatrice_2(path)
+# X_train, y_train = Test.comatrice()
+# y_predit = Classifieur.cross_forest(X_train, y_train, X_test)
+# # y_predit = Classifieur.cross_gauus(X_train, y_train, X_test)
 #
-# # import numpy as np
+#
+# import numpy as np
 # import os
 #
 #
@@ -93,9 +95,9 @@ Classifieur.cross_test_all(image, y)
 #
 #
 #
-# # path = "Data/AllTest"
-# X_test = Model_test.hist_blue(path)
-# X_train, y_train = Test.hist_blue()
-# y_predit = Classifieur.cross_forest(X_train,y_train,X_test)
+# # # path = "Data/AllTest"
+# # X_test = Model_test.hist_blue(path)
+# # X_train, y_train = Test.hist_blue()
+# # y_predit = Classifieur.cross_forest(X_train,y_train,X_test)
 #
 # print(accuracy_score(y_reel, y_predit))

@@ -56,3 +56,49 @@ def comatrice(path):
 
     print("taille imgs", len(imgs))
     return imgs
+
+def max_bleu(path):
+    maxi_bleu = 0
+
+    for f in os.listdir(path):
+        data = Image.open(path + "/" + f)
+        r, g, b = data.split()
+        if maxi_bleu <= max(b.histogram()):
+            maxi_bleu = max(b.histogram())
+
+    return maxi_bleu
+
+def comatrice_2(path):
+    imgs = []
+    maximum = max_bleu(path)
+    for f in os.listdir(path):
+        img = cv2.imread(path + "/" + f, 0)
+        data = Image.open(path + "/" + f)
+        r, g, b = data.split()
+        list = []
+        for nb in b.histogram():
+            list.append(nb / maximum)
+
+        glcmimg = skimage.feature.graycomatrix(img, [1,2], [0, np.pi/2],
+                                               symmetric=True,
+                                               normed=True)
+
+        contrast = skimage.feature.graycoprops(glcmimg, 'contrast')
+        correlation = skimage.feature.graycoprops(glcmimg, 'correlation')
+
+        #
+        for ligne in correlation:
+            for pixel in ligne:
+                # print(pixel)
+                list.append(pixel)
+
+        for ligne in contrast:
+            for pixel in ligne:
+
+                list.append(pixel/65025)
+
+        imgs.append(list)
+
+    print("taille imgs", len(imgs))
+    return imgs
+

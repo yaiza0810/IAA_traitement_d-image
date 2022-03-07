@@ -12,6 +12,7 @@ from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.utils import shuffle
 from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import confusion_matrix
 
 
 def classifieur_gauss(x_array, y_array, name_array=[0 for i in range(414)]):
@@ -37,6 +38,7 @@ def classifieur_gauss(x_array, y_array, name_array=[0 for i in range(414)]):
 
     print(accuracy_score(y_test, y_predits))
     print(classifieur.score(X_test, y_test))
+    print(confusion_matrix(y_test, y_predits))
 
 
 def classifieur_QDA(x_array, y_array):
@@ -68,8 +70,10 @@ def cross_test(X, y, class_type=0):
     print(ecart_type, moyenne)
 
 
-def cross_test_all(X, y):
-    X, y = shuffle(X, y, random_state=1)
+def cross_test_all(XX, yy):
+    X, y = shuffle(XX, yy, random_state=12)
+
+    # print(y)
     classifiers = [
         GaussianNB(),
         KNeighborsClassifier(3),
@@ -106,8 +110,26 @@ def cross_grid(X, y, class_type=0):
     return moyenne
 
 
-def cross_forest(X_train,y_train,X_test):
+def cross_forest(X_train, y_train, X_test):
     classifieur = RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1)
+
+    classifieur.fit(X_train, y_train)
+    y_predits = classifieur.predict(X_test)
+
+    return y_predits
+
+
+def cross_mlp(X_train, y_train, X_test):
+    classifieur = MLPClassifier(random_state=1, max_iter=300)
+
+    classifieur.fit(X_train, y_train)
+    y_predits = classifieur.predict(X_test)
+
+    return y_predits
+
+
+def cross_gauus(X_train, y_train, X_test):
+    classifieur = GaussianNB()
 
     classifieur.fit(X_train, y_train)
     y_predits = classifieur.predict(X_test)
