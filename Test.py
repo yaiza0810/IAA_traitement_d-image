@@ -60,7 +60,7 @@ def gradient_blue_hist_test():
 def hist_blue():  # 0.72222 avec Gauss
     imgs = []
     y = []
-    count = 0
+    maximum = max_bleu()
     path = "Data/Resized/Mer"
     valid_images = [".jpg", ".jpeg"]
     for f in os.listdir(path):
@@ -68,7 +68,6 @@ def hist_blue():  # 0.72222 avec Gauss
         if ext.lower() in valid_images:
             data = Image.open(path + "/" + f)
             r, g, b = data.split()
-            maximum = max(b.histogram())
             list = []
             for nb in b.histogram():
                 list.append(nb / maximum)
@@ -81,13 +80,11 @@ def hist_blue():  # 0.72222 avec Gauss
         if ext.lower() in valid_images:
             data = Image.open(path + "/" + f)
             r, g, b = data.split()
-            maximum = max(b.histogram())
             list = []
             for nb in b.histogram():
                 list.append(nb / maximum)
             imgs.append(list)
             y.append(0)
-    # print(imgs)
     return imgs, y
 
 
@@ -142,7 +139,7 @@ def gradient_hist():
     return x_gradient, y
 
 
-def comatrice_hist_bleu(distance, angle):
+def comatrice_hist_bleu():
     def convert_glcm(glcm):
         cpy_glcm = []
         for kol in range(0, 256):
@@ -151,9 +148,10 @@ def comatrice_hist_bleu(distance, angle):
                 cpy_glcm[kol].append(glcm[kol][kal][0][0])
         return np.array(cpy_glcm)
 
+    maximum = max_bleu()
     y = []
     imgs = []
-    path = "Data/Resized/Mer"
+    path = "Data/Mer"
     valid_images = [".jpg", ".jpeg"]
     for f in os.listdir(path):
         ext = os.path.splitext(f)[1]
@@ -161,23 +159,25 @@ def comatrice_hist_bleu(distance, angle):
             img = cv2.imread(path + "/" + f, 0)
             data = Image.open(path + "/" + f)
             r, g, b = data.split()
-            maximum = max(b.histogram())
             list = []
             for nb in b.histogram():
                 list.append(nb / maximum)
 
-            glcmimg = skimage.feature.graycomatrix(img, distances=[distance], angles=[angle], levels=256,
+            glcmimg = skimage.feature.graycomatrix(img, [1, 2], [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4],
                                                    symmetric=True,
                                                    normed=True)
-            # img_glcm = cv2.normalize(np.array(glcmimg), None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
-            img_glcm = convert_glcm(glcmimg)
-            for ligne in img_glcm:
+            img_glcm = cv2.normalize(np.array(glcmimg), None, 0, 255, cv2.NORM_MINMAX,
+                                     cv2.CV_8U)  # potentiellement inutile
+            img_glcmc = convert_glcm(img_glcm)
+            # contrast = skimage.feature.greycoprops(glcmimg,'contrast')
+
+            for ligne in img_glcmc:
                 for pixel in ligne:
                     list.append(pixel)
             imgs.append(list)
 
             y.append(1)
-    path = "Data/Resized/Ailleurs"
+    path = "Data/Ailleurs"
     valid_images = [".jpg", ".jpeg"]
     for f in os.listdir(path):
         ext = os.path.splitext(f)[1]
@@ -185,20 +185,18 @@ def comatrice_hist_bleu(distance, angle):
             img = cv2.imread(path + "/" + f, 0)
             data = Image.open(path + "/" + f)
             r, g, b = data.split()
-            # list = b.histogram()
-            maximum = max(b.histogram())
             list = []
             for nb in b.histogram():
                 list.append(nb / maximum)
 
-            glcmimg = skimage.feature.graycomatrix(img, distances=[distance], angles=[angle], levels=256,
+            glcmimg = skimage.feature.graycomatrix(img, [1, 2], [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4],
                                                    symmetric=True,
                                                    normed=True)
-            # img_glcm = cv2.normalize(np.array(glcmimg), None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U) # potentiellement inutile
-            img_glcm = convert_glcm(glcmimg)
+            img_glcm = cv2.normalize(np.array(glcmimg), None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U) # potentiellement inutile
+            img_glcmc = convert_glcm(img_glcm)
             # contrast = skimage.feature.greycoprops(glcmimg,'contrast')
 
-            for ligne in img_glcm:
+            for ligne in img_glcmc:
                 for pixel in ligne:
                     list.append(pixel)
 
@@ -255,42 +253,19 @@ def comatrice():
             for nb in b.histogram():
                 list.append(nb /maximum)
 
-            # print("bleu seule",len(list))
-
             glcmimg = skimage.feature.graycomatrix(img, [1, 2], [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4],
                                                    symmetric=True,
                                                    normed=True)
-            # print(glcmimg)
-            contrast = skimage.feature.graycoprops(glcmimg, 'contrast')
-            # print("contrast", contrast)
-            # print((len(glcmimg) - 1) ** 2)
-            correlation = skimage.feature.graycoprops(glcmimg, 'correlation')
-            homogeneite = skimage.feature.graycoprops(glcmimg, 'homogeneity')
-            asm = skimage.feature.graycoprops(glcmimg, 'ASM')
-            dissimilarite = skimage.feature.graycoprops(glcmimg, 'dissimilarity')
-            #
-            # for ligne in correlation:
-            #     for pixel in ligne:
-            #         # print(pixel)
-            #         list.append(pixel)
 
-            # for ligne in contrast:
-            #     for pixel in ligne:
-            #         # print(pixel/65025)
-            #         list.append(pixel / 65025)
-            # print(list)
-            #
+            homogeneite = skimage.feature.graycoprops(glcmimg, 'homogeneity')
+            dissimilarite = skimage.feature.graycoprops(glcmimg, 'dissimilarity')
+
             for ligne in homogeneite:
                 for pixel in ligne:
                     list.append(pixel)
 
-            # for ligne in asm:
-            #     for pixel in ligne:
-            #         list.append(pixel)
-
             for ligne in dissimilarite:
                 for pixel in ligne:
-                    print(pixel)
                     list.append(pixel)
             imgs.append(list)
             y.append(1)
@@ -311,38 +286,15 @@ def comatrice():
                                                    symmetric=True,
                                                    normed=True)
 
-            # print(glcmimg)
-            contrast = skimage.feature.graycoprops(glcmimg, 'contrast')
-            # print("contrast", contrast)
-            # print((len(glcmimg)-1)**2)
-            correlation = skimage.feature.graycoprops(glcmimg, 'correlation')
             homogeneite = skimage.feature.graycoprops(glcmimg, 'homogeneity')
-            asm = skimage.feature.graycoprops(glcmimg,'ASM')
             dissimilarite = skimage.feature.graycoprops(glcmimg,'dissimilarity')
-
-            # for ligne in correlation:
-            #     for pixel in ligne:
-            #         # print("aill",pixel)
-            #         list.append(pixel)
-
-            # for ligne in contrast:
-            #     for pixel in ligne:
-            #         # print(pixel / 65025)
-            #         list.append(pixel / 65025)
-            # print(list)
-            #
 
             for ligne in homogeneite:
                 for pixel in ligne:
                     list.append(pixel)
 
-            # for ligne in asm:
-            #     for pixel in ligne:
-            #         list.append(pixel)
-
             for ligne in dissimilarite:
                 for pixel in ligne:
-                    print("aill",pixel)
                     list.append(pixel)
             imgs.append(list)
             y.append(0)

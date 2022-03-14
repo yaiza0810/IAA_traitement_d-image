@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-
 def hist_blue(path):  # 0.72222 avec Gauss
     imgs = []
     for f in os.listdir(path):
@@ -57,6 +56,7 @@ def comatrice(path):
     print("taille imgs", len(imgs))
     return imgs
 
+
 def max_bleu(path):
     maxi_bleu = 0
 
@@ -67,6 +67,7 @@ def max_bleu(path):
             maxi_bleu = max(b.histogram())
 
     return maxi_bleu
+
 
 def comatrice_2(path):
     imgs = []
@@ -79,26 +80,21 @@ def comatrice_2(path):
         for nb in b.histogram():
             list.append(nb / maximum)
 
-        glcmimg = skimage.feature.graycomatrix(img, [1,2], [0, np.pi/2],
+        glcmimg = skimage.feature.graycomatrix(img, [1, 2], [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4],
                                                symmetric=True,
                                                normed=True)
 
-        contrast = skimage.feature.graycoprops(glcmimg, 'contrast')
-        correlation = skimage.feature.graycoprops(glcmimg, 'correlation')
+        homogeneite = skimage.feature.graycoprops(glcmimg, 'homogeneity')
+        dissimilarite = skimage.feature.graycoprops(glcmimg, 'dissimilarity')
 
-        #
-        for ligne in correlation:
+        for ligne in homogeneite:
             for pixel in ligne:
-                # print(pixel)
                 list.append(pixel)
 
-        for ligne in contrast:
+        for ligne in dissimilarite:
             for pixel in ligne:
-
-                list.append(pixel/65025)
-
+                list.append(pixel)
         imgs.append(list)
 
     print("taille imgs", len(imgs))
     return imgs
-

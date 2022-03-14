@@ -17,55 +17,18 @@ def resize_all():
     GenerateData.resize(path_ailleurs)
 
 
-# resize_all()
-# imgbis, ybis = GenerateData.gen_data_all()
-# GenerateData.gen_data_1_px()
-# imgs,y,name = GenerateData.gen_data_hist_resized()
-# im,y2 = GenerateData.gradient_blue_hist()
-# imgs,y = GenerateData.gen_data_hist_resized()
-# Classifieur.classifieur_gauss(imgs,y, name)
-# Classifieur.cross_test_all(imgbis,ybis)
-# Classifieur.cross_test(imgs,y,6)
-# Classifieur.classifieur_gauss(im,y2)
-# Classifieur.classifieur_gauss(imgbis,ybis)
-# Classifieur.cross_test(imgs,y)
-# print("4")
-# Classifieur.cross_test(im,y2,4)
-# print("normal")
-# Classifieur.cross_test(im,y2,6)
-# print("5")
-# Classifieur.cross_test(im,y2,5)
-# x, y = GenerateData.gradient()
-# Classifieur.classifieur_gauss(x, y)
-# Classifieur.cross_test(x,y)
-# Classifieur.classifieur_QDA(imgs,y)
-
-# image, y = Test.gradient_blue_hist_test()
-# Classifieur.cross_test_all(image,y)
-# imgs, y1 = GenerateData.gen_data_all()
-# Classifieur.cross_test_all(imgs, y1)
-#
-
-# for distance in range(5, 20, 5):
-# for angle in range(5,20, 5):
-image, y = Test.comatrice()
+image, y = Test.comatrice_hist_bleu()
 # X,y = GenerateData.hist_blue()
-# for max_d in range(1,10):
-#     for estim in range(1,20):
-#         for f in range(1,5):
-#             print(max_d,estim,f)
-#             X, y = shuffle(X, y, random_state=1)
-#             RandomForestClassifier(max_depth=max_d, n_estimators=estim, max_features=f)
-#             scores = cross_val_score(estimator= RandomForestClassifier(max_depth=max_d, n_estimators=estim, max_features=f), X=X, y=y, cv=10)
-#             ecart_type, moyenne = np.std(scores), np.mean(scores)
-#             print(moyenne)
 Classifieur.cross_test_all(image, y)
+# Classifieur.halving_grid(image,y)
 
+
+# #Test sur le model de la prof
 # path = "Data/AllTest"
 # X_test = Model_test.comatrice_2(path)
 # X_train, y_train = Test.comatrice()
+# # y_predit = Classifieur.cross_mlp(X_train, y_train, X_test)
 # y_predit = Classifieur.cross_forest(X_train, y_train, X_test)
-# # y_predit = Classifieur.cross_gauus(X_train, y_train, X_test)
 #
 #
 # import numpy as np
@@ -88,11 +51,10 @@ Classifieur.cross_test_all(image, y)
 #
 # y_reel = compute_labels(path)
 #
-# # print(y_predit)
-# # print(y_reel)
+# print(y_predit)
+# print(y_reel)
 #
-# # print(accuracy_score(y_reel, y_predit))
-#
+# print(accuracy_score(y_reel, y_predit))
 #
 #
 # # # path = "Data/AllTest"
@@ -100,4 +62,4 @@ Classifieur.cross_test_all(image, y)
 # # X_train, y_train = Test.hist_blue()
 # # y_predit = Classifieur.cross_forest(X_train,y_train,X_test)
 #
-# print(accuracy_score(y_reel, y_predit))
+# # print(accuracy_score(y_reel, y_predit))

@@ -5,7 +5,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
@@ -13,6 +13,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.utils import shuffle
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import HalvingGridSearchCV
 
 
 def classifieur_gauss(x_array, y_array, name_array=[0 for i in range(414)]):
@@ -70,13 +72,21 @@ def cross_test(X, y, class_type=0):
     print(ecart_type, moyenne)
 
 
+def halving_grid(X,y):
+    parameters = {'solver': ['lbfgs'], 'max_iter': [500, 1000],
+                  'alpha': [0, 0.1], 'hidden_layer_sizes': np.arange(0, 101, 20),
+                  'random_state': [1, 5, 6, 8, 9]}
+    clf = GridSearchCV(MLPClassifier(), parameters, n_jobs=-1)
+    clf.fit(X, y)
+    print(clf.best_params_)
+
+
 def cross_test_all(XX, yy):
     X, y = shuffle(XX, yy, random_state=12)
 
-    # print(y)
     classifiers = [
         GaussianNB(),
-        KNeighborsClassifier(3),
+        KNeighborsClassifier(10),
         GaussianProcessClassifier(1.0 * RBF(1.0)),
         QuadraticDiscriminantAnalysis(),
         SVC(kernel='poly'),
