@@ -30,17 +30,23 @@ def resize(file):
         imResize.save('Data/SmallResized/' + file + '/' + f + 'SmallResized.jpg', 'JPEG', quality=95)
 
 
-def gen_descr(fct):
+def gen_descr(fct, resized = True):
     description = []
     y = []
-    path = "Data/Resized/Mer"
+    if resized:
+        path = "Data/Resized/Mer"
+    else:
+        path = "Data/Mer"
     valid_images = [".jpg", ".jpeg"]
     for f in os.listdir(path):
         ext = os.path.splitext(f)[1]
         if ext.lower() in valid_images:
             description.append(fct(path + "/" + f))
             y.append(1)
-    path = "Data/Resized/Ailleurs"
+    if resized:
+        path = "Data/Resized/Ailleurs"
+    else:
+        path = "Data/Ailleurs"
     for f in os.listdir(path):
         ext = os.path.splitext(f)[1]
         if ext.lower() in valid_images:
@@ -108,29 +114,28 @@ def gradient_blue(path):
 def gradient_blue_hist(path):
     return gradient(path) + hist_blue(path)
 
-def comatrice(path):
+def blue_com_hist(path):
+    return hist_blue(path) + blue_comatrice(path)
+
+def blue_comatrice(path):
     data = mat.image.imread(path)
     data = np.array(data)
     data_reformed = []
     for i in range(len(data)):
         for j in range(len(data[0])):
             data_reformed.append([data[i][j][2], data[i][j][2], data[i][j][2]])
-    glcmimg = skimage.feature.graycomatrix(data_reformed, distances=[10], angles=[0], levels=256,
+    glcmimg = skimage.feature.graycomatrix(data_reformed, distances=[1,2], angles=[0,np.pi/4, np.pi/2, 3*np.pi/4],
                                            symmetric=True,
                                            normed=True)
-    contrast = skimage.feature.graycoprops(glcmimg, 'contrast')
     homogeneite = skimage.feature.graycoprops(glcmimg, 'homogeneity')
-    asm = skimage.feature.graycoprops(glcmimg, 'dissimilarity')
+    dissimilarité = skimage.feature.graycoprops(glcmimg, 'dissimilarity')
     list_attr = []
-    for ligne in contrast:
-        for pixel in ligne:
-            list_attr.append(pixel)
 
     for ligne in homogeneite:
         for pixel in ligne:
             list_attr.append(pixel)
 
-    for ligne in asm:
+    for ligne in dissimilarité:
         for pixel in ligne:
             list_attr.append(pixel)
     return list_attr
