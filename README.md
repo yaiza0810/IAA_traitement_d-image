@@ -1,5 +1,3 @@
 # IAA_traitement_d-image
 
-Le but de ce projet est de classifié les images de mer et d'ailleurs en utilisant seulement des techniques d'apprentissage automatique (machine learning), pas d'apprenissage profond (deep learning) autorisé. 
-
-Ceci est un projet par apprentissage, nous avons du apprendre les bases de l'apprentissage automatique seule ce qui nous a permis de nous instruire petit à petit tout au long du projet tout en testant les différentes techniques que nous venion de trouver. 
+Dans ce projet nous avons dû trouver une solution à un problème de classification d’image et coder cette solution en python. Le but ici est que l’ordinateur puisse distinguer, avec un minimum d’erreur, les images contenant de la mer des images d’ailleurs. Pour cela, nous allons entrainer un classifieur à partir d’un échantillon d’images données, on les appelle images d’apprentissages. Elles sont déjà classées en fonction de leur catégorie (image de mer ou image d’ailleurs) et reparties dans deux dossiers distincts. À la suite de l’apprentissage d’un classifieur sur ces images, nous pourrons deviner la classe d’une image étrangère.
